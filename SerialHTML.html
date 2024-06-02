@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<HTML>
+<head>
+  <link rel="stylesheet" href="Hyperloop.css">
+</head>
+<body>
+<div href="#" id="click">Connect to Microprocessor</div> <div id="excel"> Export to CSV file</div>
+<a href="#" id="StepTwo"> Step Two</a>
+<br>
+<div id="elements">
+  <div id="charp">
+    <div id="chartContainer">  </div> <div id="Power"></div> 
+    <br>
+    <div id="switches">
+      <div id="switch">Toggle Graph Scale</div>
+      <div id="velocity">Vel/Acc</div>
+      <div id="split"></div>
+      <div id="switch_rpm"> Toggle Graph Scale</div>
+    </div> 
+  </div> 
+  
+  <div id="speedometre">
+    <div id="important">  </div> 
+  </div> 
+  </div>
+  <div id="elements2">
+    <div id="track">
+      <div id="inner_dark">
+        <div id="flex_track">
+          <div class="track_segment"> <div id="track1"> </div></div>
+          <div class="track_segment"><div id="track2"> </div></div>
+          <div class="track_segment"><div id="track3"> </div></div>
+          <div class="track_segment"><div id="track4"> </div></div>
+          <div class="track_segment"><div id="track5"> </div></div>
+          <div class="track_segment"><div id="track6"> </div></div>
+          <div class="track_segment"><div id="track7"> </div></div>
+          <div class="track_segment"><div id="track8"> </div></div>
+          <div class="track_segment"><div id="track9"> </div></div>
+          <div class="track_segment"><div id="track10"> </div></div>
+        </div>
+      </div>
+    </div>
+    <div id="batteries">
+      <p>Battery1 Temperature: </p>
+      <div id="battery1"><div id="redfilter1">15°C</div></div> 
+      <div id="batteries_split"></div>
+      <p>Battery2 Temperature: </p>
+      <div id="battery2"><div id="redfilter2">15°C</div></div>
+      <div id="batteries_split"></div> 
+      <div id="more_data">
+        <p> Data1 :</p>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+<script type="text/javascript" src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script> 
+<script>
+  let done = false;
+  let cache = "";
+  var modifiable;
+  let operations = false;
+  let count = 0;
+  let times = 0.0;
+  let start_time = 0;
+  let shortShow = true;
+  let shortShow_rpm=true;
+  let velocity=false;
+  let foo=0;
+  let ppm = 1000;
+    //I decided to create an element an modify it from there as I was getting desperate
+    //I had made a website in the past that had a background that consisted of creating divs, moving them across the screen and then deleting them
+    //and since that ran smoothly I figured I'd try it ehre, to no avail :/ 
+    thing = document.getElementById('important')
+    let anima = document.createElement('span');
+    let battery1=document.getElementById('redfilter1');
+    let battery2=document.getElementById('redilter2');
+    anima.setAttribute("id", "needle");
+    thing.appendChild(anima);
+    var dataArray =  [];
+    var dataFull =[];
+    var velFull= [];
+    var velArray= [];
+    var rpmArray = [];
+    var rpmFull = [];
+    let holderArray = [];
+    var track_segments=[];
+    for(i=1;i<11;i++){
+      track_segments.push(document.getElementById("track"+String(i)));
+      track_segments[i-1].style.width="100%";
+      track_segments[i-1].style.height="100%";
+      track_segments[i-1].style.backgroundColor="rgb(255,0,0, 0.2)";
+    }
+    console.log(track_segments);
+    let cacheArray_final = [["Acceleration(ms^-2)", "RPM", "T1", "T2","T3", "T4","time(ds)", "velocity"]];
+    var chart = new CanvasJS.Chart("chartContainer", { 
+    responsive:true,
+		data: [
+		{
+			type: "spline",
+      connectNullData: true,
+			dataPoints: dataArray
+		}
+		],
+    axisY: {}
+    }
+  );
+  var rpm = new CanvasJS.Chart("Power", { 
+    responsive:true,
+		data: [
+		{
+			type: "spline",
+      connectNullData: true,
+			dataPoints: rpmArray
+		}
+		],
+    axisY: {}
+    }
+  );
+  chart.render();
+  rpm.render();
+  document.getElementById("switch").addEventListener('click', async () => {
+    if(velocity){
+      dataArray = complete_resize(dataArray, velFull, shortShow);
+    } else{
+      dataArray = complete_resize(dataArray, dataFull, shortShow);
+      console.log(dataArray);
+    }
+      shortShow=!shortShow;
+      chart.render();
+});
+
+document.getElementById("switch_rpm").addEventListener('click', async () => {
+      rpmArray = complete_resize(rpmArray, rpmFull, shortShow_rpm)
+      shortShow_rpm=!shortShow_rpm;
+      rpm.render();
+});
+document.getElementById("velocity").addEventListener('click', async () => {
+        if(!velocity){
+          dataArray.forEach(function(item, index){
+          dataArray[index]["y"] = velFull[index]["y"];
+          });
+        }else{
+          dataArray.forEach(function(item, index){
+          dataArray[index]["y"] = dataFull[index]["y"];
+          })
+        }
+      velocity=!velocity;
+      chart.render();
+});
+  //chartLStyle = document.getElementById("longChart");
+  //chartLStyle.style.overflow = "hidden";
+  document.getElementById('click').addEventListener('click', async () => {
+  // Prompt user to select any serial port.
+  //* I have no idea what these lines of codes, I'm guessing they just are important for reading the serial port
+  //As well as selecting the port to read values from
+  const port = await navigator.serial.requestPort();
+  await  port.open({baudRate: 9600});
+    const textDecoder = new TextDecoderStream();
+    const textEncoder = new TextEncoder();
+    const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
+    const reader = textDecoder.readable.getReader();
+    const writer = port.writable.getWriter();
+    start_time = Date.now();
+  //* There are some failed attempts down there, this is just the simplest I got working
+  // I foud out what the issue was, it isn't that it updates the tranform rarely, it's that value in this prototype
+  // can or should be anything between 0 and 1023, however sometimes something goes wrong "value" will be the first few digits of
+  // the number we want, I'll send an image of the console log. For some reason, the "left" of "anima" only wants to change when it
+  //has to change to a 1 digit number, otherwise no change occurs. If you have any idea what the issue could be, lemme know.   
+  while(true){
+  const { value, empty} = await reader.read();
+  //console.log("Value : " + String(value));
+  cache = cache + String(value);
+  //console.log(cache);
+    if(cache.split("n").length >=2){
+      //console.log("big time")
+      //console.log(cache);
+      cache2 = cache.split("n");
+      if(cache2[0] == ""){
+        cache2.shift()
+      }
+      cache2= cache2[0].split("m");
+      cache2.forEach(function(item, id){
+        cache2[id]=parseFloat(cache2[id]);
+        console.log(cache2[id]);
+      })
+      if(dataFull.length==0){
+        start_time = 0;/********************************************NO OFFSET BEING TAKEN************************************************************/
+        console.log(start_time);
+      }
+      cache2[0] = cache2[0]-start_time;
+      times=cache2[0];
+      redfilter1.style.backgroundColor = "rgb(255,0,0,"+ String(cache[2])+ ")";
+      redfilter1.innerHTML = String(cache2[2]) + "°C";
+      redfilter2.style.backgroundColor = "rgb(255,0,0,"+ String(cache2[3]/40)+ ")";
+      redfilter2.innerHTML = String(cache2[3]) + "°C";
+      /*track_segments.forEach(function(item, index){
+        item.style.backgroundColor = "rgb(255,0,0,"+String(cache2[offset + index]/40) + ")";
+        item.innerHTML = String(cache2[offset + index]) + "°C";
+      })*/
+      if(cache2[0]>10){
+      dataFull.push({
+        x: times,
+        y: cache2[0],
+        markerColor: "red"
+      });
+    } else{
+      dataFull.push({
+        x: times,
+        y: cache2[0]
+      });
+    }
+    if(velFull.length<2){
+      velFull.push({
+        x: times, 
+        y: cache2[0]*times*0.5
+      })
+      velArray.push({
+        x: times, 
+        y: cache2[0]*times*0.5
+      })
+    } else{
+    velFull.push({
+      x: times,
+      y: velFull[velFull.length-1]["y"] + 0.5*(dataFull[dataFull.length-1]["y"] + dataFull[dataFull.length-2]["y"])*(dataFull[dataFull.length-1]["x"] - dataFull[dataFull.length-2]["x"]) 
+    });
+    velArray.push({
+      x: times,
+      y: velFull[velFull.length-1]["y"] + 0.5*(dataFull[dataFull.length-1]["y"] + dataFull[dataFull.length-2]["y"])*(dataFull[dataFull.length-1]["x"] - dataFull[dataFull.length-2]["x"])
+    });
+    anima.style.transform ="rotate("+ String(20 + velFull[velFull.length-1]["y"]/100) + "deg)";
+    if(velocity){
+      dataArray.push({
+        x: times,
+        y: velFull[velFull.length-1]["y"]
+		  });
+    }else{
+      dataArray.push({
+        x: times,
+        y: dataFull[dataFull.length-1]["y"]
+		});
+    }
+  }
+      if(shortShow & dataArray.length>49){
+        dataArray.shift()
+        velArray.shift()
+      } 
+      if(shortShow_rpm & rpmArray.length>49){
+        rpmArray.shift()
+      }
+      //console.log(dataFull);
+      chart.render();
+      if(cache2[0]>3500){
+      rpmFull.push({
+        x: times,
+        y: cache2[1],
+        markerColor: "red"
+      });
+      rpmArray.push({
+      x: times,
+			y : cache2[1],
+      markerColor: "red"
+		  });
+    } else{
+      rpmFull.push({
+        x: times,
+        y: cache2[1]
+      });
+      rpmArray.push({
+      x: times,
+			y : cache2[1]
+		  });
+    } 
+      rpm.render();
+      //console.log(cache2);
+      cache2.push(
+        velFull[velFull.length-1]["y"]
+      )
+      cacheArray_final.push(cache2);
+      //console.log(cacheArray_final);
+      cache = cachesplit(cache.split("n"));
+      //console.log("cache:  "  + cache);
+      times = Date.now();
+    if(empty){
+      reader.releaseLock();
+      console.log("disconnect.");
+    }
+    //thing.innerHTML = String(value);
+  }
+    /*await writer.write(textEncoder.encode(4));
+    console.log(textEncoder.encode("a"));*/
+  }
+});
+
+navigator.serial.addEventListener("disconnect", (event) => {
+  console.log("disconnect");
+});
+
+document.getElementById("excel").addEventListener('click', async () => {
+  console.log("excel");
+  let csvContent = "data:text/csv;charset=utf-8,";
+        cacheArray_final.forEach(function(rowArray) {
+            let row = rowArray.join(",");
+            csvContent += row + "\r\n";
+            console.log("check");
+        });
+        var encodedUri = encodeURI(csvContent);
+        console.log(csvContent);
+        window.open(encodedUri);    
+});
+function cachesplit(cac1){
+  let cac2="";
+  cac1.shift()
+  cac1.shift();
+  cac1.forEach(function(item, index){
+      cac2=cac2+item
+    });
+    return cac2
+}
+
+function complete_resize(small, full, state){
+      console.log("switch");
+      //dataArray = [{x: 0, y:0}];
+      if(state){
+      full.forEach( function(item, index){
+      //console.log(index);
+        if(small[index]){
+          small[index] = full[index];
+        } else{
+        small.push({
+          x:  item["x"],
+			    y : item["y"]
+		    });
+        }
+        
+      });
+      } else{
+        full.forEach( function(item, index){
+          if(index >= full.length-49){
+            //console.log(index);
+          }else{
+            small.shift();
+          }
+        });
+      }
+      return small
+}
+</script>
+</HTML>

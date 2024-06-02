@@ -1,0 +1,335 @@
+body{
+    background-color: rgb(5, 5, 5);
+    margin: 0;
+    font-weight: bold;
+    font-size: 18pt;
+}
+
+a {text-decoration: none; color: black }
+a:visited{text-decoration: none; color: black}
+
+#elements{
+    height: max-content;
+    position: relative;
+}
+
+#click{
+    background-color: red;
+    height: 40px;
+    width: 500px;
+    border-radius: 40px;
+    position: relative;
+    text-align: center;
+    color: white;
+    text-decoration: double;
+    position: absolute;
+    margin-left: 1%;
+}
+
+#excel{
+    background-color: red;
+    height: 40px;
+    width: 500px;
+    border-radius: 40px;
+    position: relative;
+    text-align: center;
+    color: white;
+    text-decoration: double;
+    position: relative;
+    left: 650px;
+    margin-top: 18px;
+}
+
+#speedometre{
+    background-color: rgb(35, 35, 35);
+    border-radius: 3em;
+    position: relative;
+    left: 72%;
+    width: 27%;
+    height: 300px;
+    text-align: center;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    flex-direction: column;
+}
+#important{
+    width: 375px;
+    height: 187.5px;
+    background-color: black;
+    opacity: 1;
+    border-radius: 375px 375px 0 0;
+    display: flex;
+    align-self: center;
+    justify-self: baseline;
+}
+
+#needle{
+    width: 175px;
+    height: 10px;
+    top: 182.5px;
+    left: 12.5px;
+    background-color: red;
+    position: relative;
+    border-radius: 5px;
+    transform-origin: center right;
+}
+
+#charp{
+    float: left;
+    background-color: rgb(35, 35, 35);
+    border-radius: 3em;
+    position: absolute;
+    width: 70%;
+    height: 550px;
+    overflow: hidden;
+    margin-left: 1%;
+}
+
+#chartContainer{
+    width: 40%;
+    position: relative;
+    height: 80%;
+    left: 5%;
+    right: 0%;
+    padding-right: 0px;
+    top: 1%;
+}
+
+#Power{
+    width: 40%;
+    position: absolute;
+    height: 80%;
+    top: 1%;
+    left: 50%;
+}
+
+/* Switch tool bar*/
+#switches{
+    background-color:rgb(15, 15, 15);
+    width: 85%;
+    left: 5%;
+    top: 0px;
+    border-radius: 0.3em;
+    height: 60px;
+    display: flex;
+    position: relative;
+    flex-direction: row;
+}
+
+#switch{
+    width: 20%;
+    margin-left: 4%;
+    margin-right: 2%;
+    border-radius: 2em; 
+    background-color: red;
+    color:white;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+#velocity{
+    width: 20%;
+    border-radius: 2em; 
+    background-color: red;
+    color:white;
+    text-align: center;
+    margin-left: 2%;
+    margin-right: 4%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#split{
+    background-color: rgb(180, 180, 180);
+    height: 18px;
+    width: 5px;
+    border-radius: 2.5px;
+    align-self: center;
+    justify-self: center;
+}
+
+#switch_rpm{
+    width: 42%;
+    left: 2.5%;
+    right: 0px;
+    border-radius: 2em; 
+    background-color: red;
+    color:white;
+    text-align: center;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    margin-left: 4%;
+    margin-right: 4%;
+}
+#sliderCase{
+    background-color: rgb(35, 35, 35);
+    width: 400px;
+    height: 50px;
+    border-radius: 3em;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    flex-direction: column;
+    position: relative;
+    top: 270px;
+}
+
+#silverSlider{
+    background:rgb(180, 180, 180);
+    width: 300px;
+    height: 10px;
+    border-radius: 15px;
+    transform-origin: center center;
+    left: 50px;
+    position: relative;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#slider{
+    width: 10px;
+    height: 30px;
+    background: rgb(255, 255, 255);
+    border-radius: 1em;
+    position: relative;
+}
+
+#elements2{
+    margin-top:275px;
+    display: flex; 
+}
+
+#track{
+    background-color: rgb(35, 35, 35);
+    width: 70%;
+    height: 300px;
+    border-radius: 3em;
+    margin-left: 1%;
+    position: relative;
+    align-items: center;
+}
+
+#inner_dark{
+    background-color: rgb(10, 10, 10);
+    margin-right: 15px;
+    width: min-content;
+    height: 90%;
+    width: 98%;
+    margin-left: 15px;
+    border-radius: 3em;
+    justify-self: center;
+    align-self: center;
+    text-align: center;
+    margin-top: 15px;
+}
+
+#flex_track{
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: 10%;
+    margin-right:10%;
+    top: 25%;
+    position: relative;
+}
+
+.track_segment{
+    background-color:rgb(0, 255, 0);
+    border-color: white;
+    border-width: 5px;
+    border-style: solid;
+    height:50px;
+    width: 18%;
+    margin: 0px;
+    padding: 1px;
+    right: 0px;
+}
+
+#batteries{
+    background-color: rgb(35, 35, 35);
+    width: 27%;
+    height: 550px;
+    border-radius: 3em;
+    display: flex;
+    margin-left: 1%;
+    margin-top: -250px;
+    flex-direction: column;
+    align-items: center;
+}
+
+#batteries_split{
+    background-color: rgb(180, 180, 180);
+    width: 90%;
+    height: 5px;
+    border-radius: 2.5px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+#battery1{
+    border-width: 5px;
+    border-color: white;
+    border-style: solid;
+    background-color: rgb(0, 255, 0);
+    width: 80%;
+    height: 80px;
+    display: flex;
+}
+
+#redfilter1{
+    background-color: rgb(255,0,0,0);
+    height: 100%;
+    width: 100%;
+    color: black;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 70px;
+}
+#battery2{
+    border-width: 5px;
+    border-color: white;
+    border-style: solid;
+    background-color: rgb(0, 255, 0);
+    width: 80%;
+    height: 80px;
+}
+
+#more_data{
+    background-color: rgb(15, 15, 15);
+    width: 90%;
+    border-radius: 1em;
+    height: 200px; 
+}
+
+#redfilter2{
+    background-color: rgb(255,0,0,0);
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 70px;
+}
+
+#batteries > p{
+    color: white;
+    background-color: rgb(15, 15, 15);
+    width: 80%;
+    height: min-content;
+    text-justify: center;
+    text-align: center;
+    margin-bottom: 12px;
+    margin-top: 6px;
+}
+
+#more_data > p{
+    color: white;
+    background-color: rgb(15, 15, 15);
+    width: 80%;
+    height: min-content;
+    margin-bottom: 12px;
+    margin-left: 18px;
+    margin-top: 12px;
+}
